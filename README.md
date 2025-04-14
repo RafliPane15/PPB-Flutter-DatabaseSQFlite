@@ -1,4 +1,4 @@
-NAMA  : Rafli Syahputra Pane/
+NAMA  : Rafli Syahputra Pane\
 NRP   : 5025221038
 
 # PPB-Flutter-DatabaseSQFlite
