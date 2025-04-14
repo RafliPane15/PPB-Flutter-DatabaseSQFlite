@@ -15,7 +15,7 @@ Implementasi aplikasi Flutter yang menggunakan SQLite untuk menyimpan data produ
 - Mengedit deskripsi produk dan menyimpannya ke database
 - Menambahkan produk ke keranjang
 
-### 1. Tambahkan dependency ke `pubspec.yaml`
+## Tambahkan dependency ke `pubspec.yaml`
 
 Tambahkan package berikut agar bisa menggunakan SQLite (`sqflite`) dan mengelola path database (`path`), serta `provider` untuk state management.
 
@@ -28,7 +28,7 @@ dependencies:
   provider: ^6.1.1
 ```
 
-### Membuat model product
+## Membuat model product
 
 Model Product mendeskripsikan struktur data produk yang akan disimpan di database.
 
@@ -51,7 +51,7 @@ class Product {
 
 `fromMap()` mengubah data hasil query SQLite ke bentuk objek Product.
 
-### Membuat DatabaseHelper untuk Abstraksi Database
+## Membuat DatabaseHelper untuk Abstraksi Database
 
 File ini berfungsi untuk membuka koneksi ke database, membuat tabel, dan menyediakan fungsi insert, update, fetch, serta delete.
 
@@ -141,7 +141,7 @@ Future<void> updateProduct(Product product) async {
 
 Memperbarui entri produk berdasarkan id menggunakan metode update.
 
-### Membuat Provider Shop untuk State Management
+## Membuat Provider Shop untuk State Management
 
 Class ini berfungsi sebagai pengelola data untuk menampilkan produk di UI dan mengatur state keranjang.
 
@@ -168,5 +168,25 @@ class Shop extends ChangeNotifier {
 ```
 
 `_loadProductsFromDB()` akan mengisi daftar produk dari database. Fungsi `addProduct` dan `updateProductDescription` akan menyimpan perubahan ke database lalu memuat ulang data.
+
+import database_helper.dart ke semua file page agar dapat diimplementasikan ke program.
+
+## Lakukan penyesuain pada model
+
+```
+
+  List<Product> get shop => _shop;
+  final List<Product> _cart = [];
+  List<Product> get cart => _cart;
+
+  Shop() {
+    _loadProductsFromDB();
+  }
+
+  Future<void> _loadProductsFromDB() async {
+    _shop = await DatabaseHelper.instance.fetchAllProducts();
+```
+
+pada model `shop.dart` menambahkan integrasi langsung dengan SQLite melalui DatabaseHelper, sehingga data produk kini dimuat dari database saat aplikasi dijalankan. Jika database kosong, dua produk dummy akan ditambahkan sebagai data awal. Fungsi  `addProduct` juga diperluas agar bisa menyisipkan produk baru ke database dan memperbarui daftar produk yang tersedia. Dengan ini, data produk menjadi persisten dan tetap tersedia meskipun aplikasi ditutup dan dibuka kembali.
 
 Implementasi berhasil jika perubahan yang dilakukan pada saat aplikasi dijalankan tidak berubah saat aplikasi dilakukan restart.
